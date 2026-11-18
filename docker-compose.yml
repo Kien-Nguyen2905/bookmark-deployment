@@ -1,0 +1,48 @@
+services:
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  bookmark_service1:
+    image: bookmark_service:dev
+    container_name: bookmark_service1
+    depends_on:
+      - redis
+    env_file:
+      - ./bookmark-service/.env
+
+  bookmark_service2:
+    image: bookmark_service:dev
+    container_name: bookmark_service2
+    depends_on:
+      - redis
+    env_file:
+      - ./bookmark-service/.env
+
+  bookmark_service3:
+    image: bookmark_service:dev
+    container_name: bookmark_service3
+    depends_on:
+      - redis
+    env_file:
+      - ./bookmark-service/.env
+
+  portal:
+    image: ebvn/bookmark-app-portal:dev
+    container_name: portal
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    depends_on:
+      - bookmark_service1
+      - bookmark_service2
+      - bookmark_service3
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    env_file:
+      - ./bookmark-service/.env
