@@ -40,6 +40,7 @@ services:
       - bookmark_service1
       - bookmark_service2
       - bookmark_service3
+      - portal
     ports:
       - "80:80"
     volumes:
